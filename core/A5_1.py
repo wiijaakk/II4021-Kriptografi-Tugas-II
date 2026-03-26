@@ -46,8 +46,14 @@ class A5_1:
         self.clock_register(self.reg_z, self.reg_z[22] ^ self.reg_z[21] ^ self.reg_z[20] ^ self.reg_z[7] ^ external_bit)
 
 class A51Manager:
-    def __init__(self, a5_engine):
-        self.engine = a5_engine 
+    def __init__(self, a5_engine, is_text=False, file_path="", extension="", is_encrypted=False, content=None):
+        self.engine = a5_engine
+        self.is_text = is_text
+        self.file_path = file_path
+        self.nama_file = os.path.basename(file_path) if file_path else ""
+        self.extension = extension
+        self.is_encrypted = is_encrypted
+        self.content = content
 
     def bytes_to_bits(self, data):
         bits = []
@@ -55,7 +61,6 @@ class A51Manager:
             for i in range(8):
                 bits.append((byte >> i) & 1)
         return bits
-
 
     def bits_to_bytes(self, bits):
         result = bytearray()
@@ -69,16 +74,15 @@ class A51Manager:
             result.append(byte)
         return bytes(result)
     
-    def process_prepare(self, source_type, content, file_path=""):
-        if source_type == 'text':
-            raw_bytes = content.encode('utf-8')
-            nama_file = ""
-            ext = ""
+    def process_prepare(self):
+        if self.is_text:
+            raw_bytes = self.content.encode('utf-8')
+            self.extension = ""
         else:
-            raw_bytes = content
-            nama_file = os.path.basename(file_path)
-            ext = nama_file.split('.')[-1] if '.' in nama_file else ""
-        return raw_bytes, nama_file, ext
+            with open(self.file_path, 'rb') as f:
+                raw_bytes = f.read()
+            self.extension = self.nama_file.split('.')[-1] if '.' in self.nama_file else ""
+        return raw_bytes
 
     def encrypt_logic(self, raw_bytes, key_int, start_fn=0):
         bit_list = self.bytes_to_bits(raw_bytes)
@@ -95,5 +99,63 @@ class A51Manager:
             current_fn += 1
         payload_encrypted = self.bits_to_bytes(encrypted_bits)
         return payload_encrypted
+    
+    def decrypt_logic(self, encrypted_payload, key_int, original_size, start_fn=0):
+        decrypted = self.encrypt_logic(encrypted_payload, key_int, start_fn)
+        return decrypted[:original_size]
+
+    def interface(self, key_int):
+        raw_bytes = self.process_prepare()
+        if self.is_encrypted:
+            payload = self.encrypt_logic(raw_bytes, key_int, start_fn=0)
+        else:
+            payload = raw_bytes
+        return{
+            "payload": payload,
+            "ukuran": len(raw_bytes),
+            "nama_file": self.nama_file,
+            "extension": self.extension,
+            "is_encrypted": self.is_encrypted,
+            "is_text": self.is_text
+        }
+
+#testing
+engine = A5_1()
+kunci_rahasia = 0x1234567890ABCDEF
+
+# pesan berupa teks
+pesan_awal = "sendi wijak cia"
+manager = A51Manager(engine, is_text=True, content=pesan_awal, is_encrypted=True)
+
+# enkripsi
+hasil_interface = manager.interface(kunci_rahasia)
+ciphertext = hasil_interface["payload"]
+size_asli = hasil_interface["ukuran"]
+print(f"Pesan Asli   : {pesan_awal}")
+print(f"Ciphertext   : {ciphertext.hex()[:40]}...") # Data acak
+print(f"Size Payload : {len(ciphertext)} bytes")
+
+# dekripsi 
+data_kembali_bytes = manager.decrypt_logic(ciphertext, kunci_rahasia, size_asli)
+pesan = data_kembali_bytes.decode('utf-8')
+print(f"Hasil : {pesan}")
 
 
+# pakai file
+path_sumber = os.path.join(os.path.dirname(__file__), "rahasia.pdf")
+
+if os.path.exists(path_sumber):
+    manager = A51Manager(engine, is_text=False, file_path=path_sumber, is_encrypted=True)
+    #enkripsi
+    hasil_enkripsi = manager.interface(kunci_rahasia)
+    ciphertext = hasil_enkripsi["payload"]
+    ukuran_asli = hasil_enkripsi["ukuran"]
+    ekstensi = hasil_enkripsi["extension"]
+    print(f"File '{path_sumber}' berhasil dienkripsi.")
+    print(f"Ukuran asli: {ukuran_asli} bytes")
+    #dekripsi
+    data = manager.decrypt_logic(ciphertext, kunci_rahasia, ukuran_asli)
+    file_baru = f"hasil_dekripsi.{ekstensi}"
+    with open(file_baru, "wb") as f:
+        f.write(data)
+    print(f"File hasil dekripsi disimpan sebagai: {file_baru}")
