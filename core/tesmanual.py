@@ -12,8 +12,8 @@ import tempfile
 import os
 import hashlib
 
-from video_io import LOSSLESS_CODEC
-from stego import embed, extract
+from core.video_io import LOSSLESS_CODEC
+from core.stego import embed, extract
 
 
 def make_cover_video(path, width=640, height=480, n_frames=30, fps=30):

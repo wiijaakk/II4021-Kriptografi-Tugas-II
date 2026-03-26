@@ -1,8 +1,8 @@
 import hashlib
-from lsb_core import bytes_to_bits, bits_to_bytes
-from metadata import build_header, parse_header
+from core.lsb_core import bytes_to_bits, bits_to_bytes
+from core.metadata import build_header, parse_header
 from core.embedding import embed as embed_to_frames, extract as extract_from_frames
-from video_io import read_video, write_video, calculate_capacity
+from core.video_io import read_video, write_video, calculate_capacity
 
 
 def embed(cover_path, payload_info, output_path, scheme, mode, seed=None):

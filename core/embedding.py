@@ -1,5 +1,5 @@
 import random
-from lsb_core import embed_bits_to_frame, extract_bits_from_frame, bits_per_pixel
+from core.lsb_core import bits_per_pixel
 
 
 def get_pixel_order(frames, scheme, mode, seed=None):
@@ -96,5 +96,5 @@ def extract(frames, num_bits, scheme, mode, seed=None):
 
 
 def _scheme_bits(scheme):
-    from video_io import LSB_SCHEMES
+    from core.video_io import LSB_SCHEMES
     return LSB_SCHEMES[scheme]

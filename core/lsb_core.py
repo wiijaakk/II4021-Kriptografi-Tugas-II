@@ -1,5 +1,5 @@
 import numpy as np
-from video_io import LSB_SCHEMES
+from core.video_io import LSB_SCHEMES
 
 # fungsi untuk embed bits ke fram video, return frame yang sudah dimodif + jumlah bit yang berhasil diembed
 def embed_bits_to_frame(frame, bits, scheme, start_idx=0): 
