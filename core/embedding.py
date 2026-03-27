@@ -1,7 +1,6 @@
 import random
 from core.lsb_core import bits_per_pixel
 
-
 def get_pixel_order(frames, scheme, mode, seed=None):
     # bikin list semua posisi piksel (frame_idx, y, x)
     positions = []
