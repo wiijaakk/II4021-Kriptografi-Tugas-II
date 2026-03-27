@@ -119,6 +119,7 @@ class A51Manager:
             "is_text": self.is_text
         }
 
+"""
 #testing
 engine = A5_1()
 kunci_rahasia = 0x1234567890ABCDEF
@@ -159,3 +160,4 @@ if os.path.exists(path_sumber):
     with open(file_baru, "wb") as f:
         f.write(data)
     print(f"File hasil dekripsi disimpan sebagai: {file_baru}")
+"""

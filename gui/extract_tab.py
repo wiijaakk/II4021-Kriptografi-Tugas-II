@@ -5,6 +5,10 @@ class ExtractTab:
     def __init__(self, parent):
         self.section_font = ctk.CTkFont(size=18, weight="bold")
 
+        # scrollable container
+        scroll = ctk.CTkScrollableFrame(parent)
+        scroll.pack(fill="both", expand=True)
+
         self.video_path = ctk.StringVar()
         self.encrypt_enabled = ctk.BooleanVar(value=False)
         self.mode = ctk.StringVar(value="sequential")
@@ -12,29 +16,29 @@ class ExtractTab:
         self.last_binary_payload = None
         self.last_filename = "extracted_payload.bin"
 
-        ctk.CTkLabel(parent, text="Stego Video", font=self.section_font).pack(anchor="w", padx=10, pady=(8, 2))
-        row = ctk.CTkFrame(parent)
+        ctk.CTkLabel(scroll, text="Stego Video", font=self.section_font).pack(anchor="w", padx=10, pady=(8, 2))
+        row = ctk.CTkFrame(scroll)
         row.pack(fill="x", padx=10, pady=(0, 10))
 
         ctk.CTkEntry(row, textvariable=self.video_path).pack(side="left", fill="x", expand=True)
         ctk.CTkButton(row, text="Browse", command=self.browse).pack(side="left")
 
         self.encryption_checkbox = ctk.CTkCheckBox(
-            parent,
+            scroll,
             text="Use Encryption (A5/1)",
             variable=self.encrypt_enabled,
             command=self.update_encryption_state,
         )
         self.encryption_checkbox.pack(anchor="w", padx=10, pady=(2, 10))
 
-        self.key_frame = ctk.CTkFrame(parent)
+        self.key_frame = ctk.CTkFrame(scroll)
         ctk.CTkLabel(self.key_frame, text="Key A5/1").pack(anchor="w")
         self.key_entry = ctk.CTkEntry(self.key_frame, placeholder_text="Key (integer)")
         self.key_entry.pack(fill="x", pady=(4, 0))
 
-        ctk.CTkLabel(parent, text="Mode", font=self.section_font).pack(anchor="w", padx=10, pady=(2, 2))
+        ctk.CTkLabel(scroll, text="Mode", font=self.section_font).pack(anchor="w", padx=10, pady=(2, 2))
         self.sequential_radio = ctk.CTkRadioButton(
-            parent,
+            scroll,
             text="Sequential",
             variable=self.mode,
             value="sequential",
@@ -42,7 +46,7 @@ class ExtractTab:
         )
         self.sequential_radio.pack(anchor="w", padx=10, pady=(0, 2))
         self.random_radio = ctk.CTkRadioButton(
-            parent,
+            scroll,
             text="Random",
             variable=self.mode,
             value="random",
@@ -50,19 +54,19 @@ class ExtractTab:
         )
         self.random_radio.pack(anchor="w", padx=10, pady=(0, 10))
 
-        self.seed_frame = ctk.CTkFrame(parent)
+        self.seed_frame = ctk.CTkFrame(scroll)
         ctk.CTkLabel(self.seed_frame, text="Stego Key").pack(anchor="w")
         self.seed_entry = ctk.CTkEntry(self.seed_frame, placeholder_text="Stego Key")
         self.seed_entry.pack(fill="x", pady=(4, 0))
 
-        ctk.CTkLabel(parent, text="LSB Scheme", font=self.section_font).pack(anchor="w", padx=10, pady=(2, 2))
-        ctk.CTkOptionMenu(parent, values=["1-1-1", "3-3-2", "4-4-4"], variable=self.scheme).pack(
+        ctk.CTkLabel(scroll, text="LSB Scheme", font=self.section_font).pack(anchor="w", padx=10, pady=(2, 2))
+        ctk.CTkOptionMenu(scroll, values=["1-1-1", "3-3-2", "4-4-4"], variable=self.scheme).pack(
             padx=10, pady=(0, 10)
         )
 
-        ctk.CTkButton(parent, text="EXTRACT", command=self.run_extract).pack(pady=10)
+        ctk.CTkButton(scroll, text="EXTRACT", command=self.run_extract).pack(pady=10)
 
-        self.result_section = ctk.CTkFrame(parent, fg_color="transparent")
+        self.result_section = ctk.CTkFrame(scroll, fg_color="transparent")
         ctk.CTkLabel(self.result_section, text="Output", font=self.section_font).pack(anchor="w", pady=(2, 2))
         self.output_box = ctk.CTkTextbox(self.result_section, height=150)
         self.output_box.pack(fill="x")
@@ -75,7 +79,7 @@ class ExtractTab:
         )
         self.save_button.pack(pady=(8, 8))
 
-        self.status_label = ctk.CTkLabel(parent, text="")
+        self.status_label = ctk.CTkLabel(scroll, text="")
         self.status_label.pack(pady=(6, 0))
 
         self.update_encryption_state()
