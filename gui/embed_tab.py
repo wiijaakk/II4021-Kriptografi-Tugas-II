@@ -6,34 +6,36 @@ from gui.stego_service import embed_payload
 class EmbedTab:
     def __init__(self, parent):
         self.parent = parent
+        self.section_font = ctk.CTkFont(size=18, weight="bold")
 
         self.video_path = ctk.StringVar()
         self.output_path = ctk.StringVar()
         self.payload_file_path = ctk.StringVar()
         self.payload_type = ctk.StringVar(value="text")
+        self.encrypt_enabled = ctk.BooleanVar(value=False)
 
         # pilih video
-        ctk.CTkLabel(parent, text="Cover Video").pack(anchor="w", padx=10)
+        ctk.CTkLabel(parent, text="Cover Video", font=self.section_font).pack(anchor="w", padx=10, pady=(8, 2))
         row = ctk.CTkFrame(parent)
-        row.pack(fill="x", padx=10, pady=5)
+        row.pack(fill="x", padx=10, pady=(0, 10))
 
         ctk.CTkEntry(row, textvariable=self.video_path).pack(side="left", fill="x", expand=True)
         ctk.CTkButton(row, text="Browse", command=self.browse_video).pack(side="left")
 
         # pilih payload
-        ctk.CTkLabel(parent, text="Payload Source").pack(anchor="w", padx=10)
-        payload_type_row = ctk.CTkFrame(parent)
-        payload_type_row.pack(fill="x", padx=10, pady=(0, 6))
+        ctk.CTkLabel(parent, text="Payload Source", font=self.section_font).pack(anchor="w", padx=10, pady=(2, 2))
+        self.payload_type_row = ctk.CTkFrame(parent)
+        self.payload_type_row.pack(fill="x", padx=10, pady=(0, 8))
 
         ctk.CTkRadioButton(
-            payload_type_row,
+            self.payload_type_row,
             text="Text",
             variable=self.payload_type,
             value="text",
             command=self.update_payload_input,
         ).pack(side="left", padx=(0, 10))
         ctk.CTkRadioButton(
-            payload_type_row,
+            self.payload_type_row,
             text="File",
             variable=self.payload_type,
             value="file",
@@ -41,7 +43,6 @@ class EmbedTab:
         ).pack(side="left")
 
         self.text_payload_frame = ctk.CTkFrame(parent)
-        self.text_payload_frame.pack(fill="x", padx=10, pady=(0, 6))
         ctk.CTkLabel(self.text_payload_frame, text="Text Payload").pack(anchor="w")
         self.textbox = ctk.CTkTextbox(self.text_payload_frame, height=90)
         self.textbox.pack(fill="x", pady=(4, 0))
@@ -58,38 +59,53 @@ class EmbedTab:
         )
 
         # pilih encryption
-        ctk.CTkLabel(parent, text="Encryption: A5/1 (required)").pack(anchor="w", padx=10)
-        self.key_entry = ctk.CTkEntry(parent, placeholder_text="Key (integer)")
-        self.key_entry.pack(fill="x", padx=10)
+        self.encryption_checkbox = ctk.CTkCheckBox(
+            parent,
+            text="Use Encryption (A5/1)",
+            variable=self.encrypt_enabled,
+            command=self.update_encryption_state,
+        )
+        self.encryption_checkbox.pack(anchor="w", padx=10, pady=(2, 10))
+
+        self.encryption_key_frame = ctk.CTkFrame(parent)
+        ctk.CTkLabel(self.encryption_key_frame, text="Key A5/1").pack(anchor="w")
+        self.key_entry = ctk.CTkEntry(self.encryption_key_frame, placeholder_text="Key (integer)")
+        self.key_entry.pack(fill="x", pady=(4, 0))
 
         # seq or random
+        ctk.CTkLabel(parent, text="Insertion Mode", font=self.section_font).pack(anchor="w", padx=10, pady=(2, 2))
         self.mode = ctk.StringVar(value="sequential")
-        ctk.CTkRadioButton(
+        self.sequential_radio = ctk.CTkRadioButton(
             parent,
             text="Sequential",
             variable=self.mode,
             value="sequential",
             command=self.update_seed_state,
-        ).pack(anchor="w", padx=10)
-        ctk.CTkRadioButton(
+        )
+        self.sequential_radio.pack(anchor="w", padx=10, pady=(0, 2))
+        self.random_radio = ctk.CTkRadioButton(
             parent,
             text="Random",
             variable=self.mode,
             value="random",
             command=self.update_seed_state,
-        ).pack(anchor="w", padx=10)
+        )
+        self.random_radio.pack(anchor="w", padx=10, pady=(0, 10))
 
-        self.seed_entry = ctk.CTkEntry(parent, placeholder_text="Stego Key")
-        self.seed_entry.pack(fill="x", padx=10)
+        self.seed_frame = ctk.CTkFrame(parent)
+        ctk.CTkLabel(self.seed_frame, text="Stego Key").pack(anchor="w")
+        self.seed_entry = ctk.CTkEntry(self.seed_frame, placeholder_text="Stego Key")
+        self.seed_entry.pack(fill="x", pady=(4, 0))
 
         # pilih lsb scheme
+        ctk.CTkLabel(parent, text="LSB Scheme", font=self.section_font).pack(anchor="w", padx=10, pady=(2, 2))
         self.scheme = ctk.StringVar(value="3-3-2")
-        ctk.CTkOptionMenu(parent, values=["1-1-1", "3-3-2", "4-4-4"], variable=self.scheme).pack(padx=10)
+        ctk.CTkOptionMenu(parent, values=["1-1-1", "3-3-2", "4-4-4"], variable=self.scheme).pack(padx=10, pady=(0, 10))
 
         # file output
-        ctk.CTkLabel(parent, text="Output").pack(anchor="w", padx=10)
+        ctk.CTkLabel(parent, text="Output", font=self.section_font).pack(anchor="w", padx=10, pady=(2, 2))
         row2 = ctk.CTkFrame(parent)
-        row2.pack(fill="x", padx=10)
+        row2.pack(fill="x", padx=10, pady=(0, 10))
 
         ctk.CTkEntry(row2, textvariable=self.output_path).pack(side="left", fill="x", expand=True)
         ctk.CTkButton(row2, text="Save", command=self.save_file).pack(side="left")
@@ -101,6 +117,7 @@ class EmbedTab:
         self.result.pack()
 
         self.update_payload_input()
+        self.update_encryption_state()
         self.update_seed_state()
 
     def browse_video(self):
@@ -121,16 +138,30 @@ class EmbedTab:
     def update_payload_input(self):
         if self.payload_type.get() == "text":
             self.file_payload_frame.pack_forget()
-            self.text_payload_frame.pack(fill="x", padx=10, pady=(0, 6))
+            self.text_payload_frame.pack(fill="x", padx=10, pady=(0, 6), after=self.payload_type_row)
         else:
             self.text_payload_frame.pack_forget()
-            self.file_payload_frame.pack(fill="x", padx=10, pady=(0, 6))
+            self.file_payload_frame.pack(fill="x", padx=10, pady=(0, 6), after=self.payload_type_row)
+
+    def update_encryption_state(self):
+        if self.encrypt_enabled.get():
+            self.encryption_key_frame.pack(
+                fill="x",
+                padx=10,
+                pady=(0, 6),
+                after=self.encryption_checkbox,
+            )
+        else:
+            self.encryption_key_frame.pack_forget()
+            self.key_entry.delete(0, "end")
 
     def update_seed_state(self):
         if self.mode.get() == "random":
-            self.seed_entry.configure(state="normal", placeholder_text="Stego Key (required for random)")
+            self.seed_entry.configure(placeholder_text="Stego Key (required for random)")
+            self.seed_frame.pack(fill="x", padx=10, pady=(0, 6), after=self.random_radio)
         else:
-            self.seed_entry.configure(state="normal", placeholder_text="Stego Key (optional for sequential)")
+            self.seed_entry.delete(0, "end")
+            self.seed_frame.pack_forget()
 
     def run_embed(self):
         video = self.video_path.get()
@@ -148,7 +179,7 @@ class EmbedTab:
                 mode=self.mode.get(),
                 scheme=self.scheme.get(),
                 stego_key=self.seed_entry.get(),
-                encrypt_enabled=True,
+                encrypt_enabled=self.encrypt_enabled.get(),
             )
 
             mse = calculate_mse(video, output)
