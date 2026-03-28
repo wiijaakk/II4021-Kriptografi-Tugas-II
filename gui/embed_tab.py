@@ -143,7 +143,7 @@ class EmbedTab:
         ctk.CTkLabel(settings_col, text="LSB Scheme", font=self.section_font).grid(row=5, column=0, sticky="w", pady=(8, 0))
         ctk.CTkOptionMenu(
             settings_col,
-            values=["1-1-1", "3-3-2", "4-4-4"],
+            values=["1-1-1", "3-3-2", "4-4-4", "mp4-robust"],
             font=self.small_font,
             dropdown_font=self.small_font,
             variable=self.scheme,
@@ -205,14 +205,17 @@ class EmbedTab:
         self.canvas.get_tk_widget().grid(row=0, column=0, sticky="nsew")
 
     def browse_video(self):
-        path = filedialog.askopenfilename(filetypes=[("AVI", "*.avi")])
+        path = filedialog.askopenfilename(filetypes=[("Video Files", "*.avi *.mp4")])
         if path:
             self.video_path.set(path)
             self._refresh_capacity_hint()
             self._update_histograms(cover_video=path)
 
     def save_file(self):
-        path = filedialog.asksaveasfilename(defaultextension=".avi")
+        path = filedialog.asksaveasfilename(
+            defaultextension=".avi",
+            filetypes=[("AVI (*.avi)", "*.avi"), ("MP4 (*.mp4)", "*.mp4")]
+        )
         if path:
             self.output_path.set(path)
 

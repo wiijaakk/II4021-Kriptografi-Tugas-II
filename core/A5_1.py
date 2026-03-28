@@ -86,8 +86,11 @@ class A51Manager:
 
     def encrypt_logic(self, raw_bytes, key_int, start_fn=0):
         bit_list = self.bytes_to_bits(raw_bytes)
-        while len(bit_list) % 228 != 0:
-            bit_list.append(0)
+        
+        # Hapus padding ke 228 bit agar tidak ada trailing bytes (menyebabkan hash berubah)
+        # while len(bit_list) % 228 != 0:
+        #     bit_list.append(0)
+            
         encrypted_bits = []
         current_fn = start_fn
         for i in range(0, len(bit_list), 228):
@@ -118,3 +121,46 @@ class A51Manager:
             "is_encrypted": self.is_encrypted,
             "is_text": self.is_text
         }
+
+"""
+#testing
+engine = A5_1()
+kunci_rahasia = 0x1234567890ABCDEF
+
+# pesan berupa teks
+pesan_awal = "sendi wijak cia"
+manager = A51Manager(engine, is_text=True, content=pesan_awal, is_encrypted=True)
+
+# enkripsi
+hasil_interface = manager.interface(kunci_rahasia)
+ciphertext = hasil_interface["payload"]
+size_asli = hasil_interface["ukuran"]
+print(f"Pesan Asli   : {pesan_awal}")
+print(f"Ciphertext   : {ciphertext.hex()[:40]}...") # Data acak
+print(f"Size Payload : {len(ciphertext)} bytes")
+
+# dekripsi 
+data_kembali_bytes = manager.decrypt_logic(ciphertext, kunci_rahasia, size_asli)
+pesan = data_kembali_bytes.decode('utf-8')
+print(f"Hasil : {pesan}")
+
+
+# pakai file
+path_sumber = os.path.join(os.path.dirname(__file__), "rahasia.pdf")
+
+if os.path.exists(path_sumber):
+    manager = A51Manager(engine, is_text=False, file_path=path_sumber, is_encrypted=True)
+    #enkripsi
+    hasil_enkripsi = manager.interface(kunci_rahasia)
+    ciphertext = hasil_enkripsi["payload"]
+    ukuran_asli = hasil_enkripsi["ukuran"]
+    ekstensi = hasil_enkripsi["extension"]
+    print(f"File '{path_sumber}' berhasil dienkripsi.")
+    print(f"Ukuran asli: {ukuran_asli} bytes")
+    #dekripsi
+    data = manager.decrypt_logic(ciphertext, kunci_rahasia, ukuran_asli)
+    file_baru = f"hasil_dekripsi.{ekstensi}"
+    with open(file_baru, "wb") as f:
+        f.write(data)
+    print(f"File hasil dekripsi disimpan sebagai: {file_baru}")
+"""

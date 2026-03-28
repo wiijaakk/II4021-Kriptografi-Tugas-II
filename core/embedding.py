@@ -6,6 +6,7 @@ def get_pixel_order(total_pixels, mode, seed=None):
     if mode == 'random':
         if seed is None:
             raise ValueError("random mode butuh seed")
+        # convert seed ke integer hash buat NumPy RNG
         seed_int = int(hash(seed)) % (2**63)
         rng = np.random.default_rng(seed=seed_int)
         rng.shuffle(indices)

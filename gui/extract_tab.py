@@ -101,7 +101,7 @@ class ExtractTab:
         ctk.CTkLabel(settings_col, text="LSB Scheme", font=self.section_font).grid(row=5, column=0, sticky="w", pady=(8, 0))
         ctk.CTkOptionMenu(
             settings_col,
-            values=["1-1-1", "3-3-2", "4-4-4"],
+            values=["1-1-1", "3-3-2", "4-4-4", "mp4-robust"],
             font=self.small_font,
             dropdown_font=self.small_font,
             variable=self.scheme,
@@ -137,7 +137,7 @@ class ExtractTab:
         self.save_button.grid(row=2, column=0, sticky="ew", padx=8, pady=(0, 8))
 
     def browse(self):
-        path = filedialog.askopenfilename(filetypes=[("AVI", "*.avi")])
+        path = filedialog.askopenfilename(filetypes=[("Video Files", "*.avi *.mp4")])
         if path:
             self.video_path.set(path)
 

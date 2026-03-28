@@ -6,6 +6,7 @@ def encrypt_bytes(data_bytes, key_int):
     return manager.encrypt_logic(data_bytes, key_int)
 
 def decrypt_bytes(data_bytes, key_int):
+    # A5/1 symmetric
     engine = A5_1()
     manager = A51Manager(engine)
     return manager.encrypt_logic(data_bytes, key_int)

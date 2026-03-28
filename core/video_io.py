@@ -8,6 +8,7 @@ LSB_SCHEMES = {
     '1-1-1': (1, 1, 1),
     '3-3-2': (3, 3, 2),
     '4-4-4': (4, 4, 4),
+    'mp4-robust': (0, 0, 0), # placeholder buat mp4
 }
 
 def read_video(video_path):
@@ -25,7 +26,6 @@ def read_video(video_path):
         'fps': cap.get(cv2.CAP_PROP_FPS),
         'frame_count': int(cap.get(cv2.CAP_PROP_FRAME_COUNT)),
     }
-
     frames = []
     while True:
         ret, frame = cap.read()
@@ -39,10 +39,16 @@ def read_video(video_path):
 
 
 def write_video(output_path, frames, info):
-    fourcc = cv2.VideoWriter_fourcc(*LOSSLESS_CODEC)
+    # cek format file dari extensinya, kalau mp4 pake codec mp4v
+    if str(output_path).lower().endswith('.mp4'):
+        fourcc = cv2.VideoWriter_fourcc(*'mp4v')
+    else:
+        fourcc = cv2.VideoWriter_fourcc(*LOSSLESS_CODEC)
+        
     writer = cv2.VideoWriter(output_path, fourcc, info['fps'], (info['width'], info['height']))
 
-    if not writer.isOpened():
+    if not writer.isOpened() and not str(output_path).lower().endswith('.mp4'):
+        # fallback buat .avi kalau RGBA gagal
         fourcc = cv2.VideoWriter_fourcc(*'png ')
         writer = cv2.VideoWriter(output_path, fourcc, info['fps'], (info['width'], info['height']))
 
@@ -59,6 +65,14 @@ def calculate_capacity(video_path, scheme='3-3-2'):
         raise ValueError(f"Skema tidak dikenal: {scheme}")
 
     frames, info = read_video(video_path)
+    
+    if scheme == 'mp4-robust':
+        # Tiap blok 16x16 muat 1 bit, dipotong 64 bit per frame (32 dummy + 32 header)
+        blocks_per_frame = (info['width'] // 16) * (info['height'] // 16)
+        usable_bits_per_frame = blocks_per_frame - 64
+        total_bits = max(0, usable_bits_per_frame) * info['frame_count']
+        return total_bits // 8
+
     r, g, b = LSB_SCHEMES[scheme]
     bits_per_pixel = r + g + b
     total_pixels = info['width'] * info['height'] * info['frame_count']

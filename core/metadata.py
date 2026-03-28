@@ -4,6 +4,7 @@ SCHEME_TO_CODE = {
     '3-3-2': 0,
     '1-1-1': 1,
     '4-4-4': 2,
+    'mp4-robust': 99,
 }
 
 CODE_TO_SCHEME = {value: key for key, value in SCHEME_TO_CODE.items()}

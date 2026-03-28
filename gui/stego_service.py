@@ -65,13 +65,6 @@ def _estimate_total_bytes(payload_info, mode, scheme):
     return len(header) + len(payload_info["payload"])
 
 
-def _estimate_encrypted_size(raw_size_bytes):
-    total_bits = int(raw_size_bytes) * 8
-    block_bits = 228
-    block_count = (total_bits + block_bits - 1) // block_bits
-    return (block_count * block_bits) // 8
-
-
 def embed_payload(
     cover_video,
     output_video,
@@ -100,27 +93,6 @@ def embed_payload(
         file_payload_path,
     )
 
-    estimated_payload_size = len(raw_payload)
-    if encrypt_enabled:
-        estimated_payload_size = _estimate_encrypted_size(len(raw_payload))
-
-    estimate_info = {
-        "ukuran": estimated_payload_size,
-        "nama_file": nama_file,
-        "extension": extension,
-        "is_encrypted": bool(encrypt_enabled),
-        "is_text": is_text,
-    }
-
-    # biar validate capacity dulu sebelum jalan
-    needed_bytes = _estimate_total_bytes({"payload": b"\x00" * 0, **estimate_info}, mode, scheme)
-    needed_bytes += estimated_payload_size
-    available_bytes = calculate_capacity(cover_video, scheme)
-    if needed_bytes > available_bytes:
-        raise ValueError(
-            f"Kapasitas tidak cukup. Butuh {needed_bytes} bytes, tersedia {available_bytes} bytes."
-        )
-
     payload_bytes = raw_payload
     if encrypt_enabled:
         key_int = _parse_a51_key(a51_key)
@@ -134,6 +106,13 @@ def embed_payload(
         "is_encrypted": bool(encrypt_enabled),
         "is_text": is_text,
     }
+
+    needed_bytes = _estimate_total_bytes(payload_info, mode, scheme)
+    available_bytes = calculate_capacity(cover_video, scheme)
+    if needed_bytes > available_bytes:
+        raise ValueError(
+            f"Kapasitas tidak cukup. Butuh {needed_bytes} bytes, tersedia {available_bytes} bytes."
+        )
 
     stego_embed(cover_video, payload_info, output_video, scheme, mode, seed)
 
