@@ -13,7 +13,8 @@ class App(ctk.CTk):
     def __init__(self):
         super().__init__()
         self.title("Video Steganography")
-        self.geometry("900x600")
+        self.geometry("1260x760")
+        self.minsize(1160, 700)
 
         self.tabview = ctk.CTkTabview(self)
         self.tabview.pack(fill="both", expand=True, padx=10, pady=10)
