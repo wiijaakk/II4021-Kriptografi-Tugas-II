@@ -31,10 +31,6 @@ class ExtractTab:
         self._build_controls(left)
         self._build_output_panel(right)
 
-        self.encrypt_enabled.set(0)
-        self.encryption_checkbox.deselect()
-        self.encryption_key_frame.grid_remove()
-
         self.update_encryption_state()
         self.update_seed_state()
 
@@ -145,6 +141,13 @@ class ExtractTab:
         if path:
             self.video_path.set(path)
 
+    def _is_encryption_enabled(self):
+        """Parse encryption checkbox state robustly."""
+        raw = self.encryption_checkbox.get()
+        if isinstance(raw, str):
+            return raw.strip().lower() in ("1", "true", "on", "yes")
+        return bool(raw)
+
     def run_extract(self):
         video = self.video_path.get()
 
@@ -153,7 +156,7 @@ class ExtractTab:
 
             result = extract_payload(
                 stego_video=video,
-                a51_key=self.key_entry.get() if self._encryption_is_enabled() else "",
+                a51_key=self.key_entry.get() if self._is_encryption_enabled() else "",
                 stego_key=self.seed_entry.get(),
                 mode=self.mode.get(),
                 scheme=self.scheme.get(),
@@ -185,7 +188,7 @@ class ExtractTab:
                     "Payload file berhasil diekstrak. Pilih lokasi simpan file.",
                 )
         except Exception as exc:
-            if "Key A5/1 wajib diisi" in str(exc) and not self._encryption_is_enabled():
+            if "Key A5/1 wajib diisi" in str(exc) and not self._is_encryption_enabled():
                 self.status_label.configure(text="✗ Error: Payload terenkripsi, aktifkan Use Encryption (A5/1).")
                 messagebox.showerror(
                     "Extract Gagal",
@@ -196,12 +199,6 @@ class ExtractTab:
             self.status_label.configure(text=f"✗ Error: {exc}")
             messagebox.showerror("Extract Gagal", str(exc))
 
-    def _encryption_is_enabled(self):
-        encrypt_raw = self.encryption_checkbox.get()
-        if isinstance(encrypt_raw, str):
-            return encrypt_raw.strip().lower() in ("1", "true", "on", "yes")
-        return bool(encrypt_raw)
-
     def _set_output_text(self, text):
         self.output_box.configure(state="normal")
         self.output_box.delete("1.0", "end")
@@ -209,7 +206,7 @@ class ExtractTab:
         self.output_box.configure(state="disabled")
 
     def update_encryption_state(self):
-        encrypt_enabled = self._encryption_is_enabled()
+        encrypt_enabled = self._is_encryption_enabled()
         if encrypt_enabled:
             self.encryption_key_frame.grid(row=1, column=0, sticky="ew")
         else:

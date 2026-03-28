@@ -40,10 +40,6 @@ class EmbedTab:
         self._build_metrics_panel(right)
         self._build_histogram_panel(right)
 
-        self.encrypt_enabled.set(0)
-        self.encryption_checkbox.deselect()
-        self.encryption_key_frame.grid_remove()
-
         self.update_payload_input()
         self.update_encryption_state()
         self.update_seed_state()
@@ -66,14 +62,13 @@ class EmbedTab:
         ctk.CTkButton(video_row, text="Browse", width=90, command=self.browse_video).grid(row=0, column=1)
 
         ctk.CTkLabel(self.form, text="Payload", font=self.section_font).grid(row=2, column=0, sticky="w", pady=(0, 4))
-        self.payload_switch = ctk.CTkSegmentedButton(
+        ctk.CTkSegmentedButton(
             self.form,
             values=["text", "file"],
             variable=self.payload_type,
             font=self.small_font,
             command=lambda _: self.update_payload_input(),
-        )
-        self.payload_switch.grid(row=3, column=0, sticky="ew", pady=(0, 6))
+        ).grid(row=3, column=0, sticky="ew", pady=(0, 6))
 
         self.text_payload_frame = ctk.CTkFrame(self.form)
         self.text_payload_frame.grid_columnconfigure(0, weight=1)
@@ -184,9 +179,6 @@ class EmbedTab:
         self.metric_scheme = ctk.CTkLabel(panel, text="Scheme: 3-3-2", font=self.small_font)
         self.metric_scheme.grid(row=0, column=3, sticky="w", padx=8, pady=8)
 
-        self.result = ctk.CTkLabel(parent, text="", anchor="w", justify="left")
-        self.result.grid(row=2, column=0, sticky="ew", padx=14, pady=(0, 10))
-
     def _build_histogram_panel(self, parent):
         hist_card = ctk.CTkFrame(parent)
         hist_card.grid(row=1, column=0, sticky="nsew", padx=10, pady=(0, 8))
@@ -237,13 +229,15 @@ class EmbedTab:
             self.text_payload_frame.grid_forget()
             self.file_payload_frame.grid(row=4, column=0, sticky="ew", pady=(0, 6))
 
-    def update_encryption_state(self):
-        encrypt_enabled_raw = self.encryption_checkbox.get()
-        if isinstance(encrypt_enabled_raw, str):
-            encrypt_enabled = encrypt_enabled_raw.strip().lower() in ("1", "true", "on", "yes")
-        else:
-            encrypt_enabled = bool(encrypt_enabled_raw)
+    def _is_encryption_enabled(self):
+        """Parse encryption checkbox state robustly."""
+        raw = self.encryption_checkbox.get()
+        if isinstance(raw, str):
+            return raw.strip().lower() in ("1", "true", "on", "yes")
+        return bool(raw)
 
+    def update_encryption_state(self):
+        encrypt_enabled = self._is_encryption_enabled()
         if encrypt_enabled:
             self.encryption_key_frame.grid(row=1, column=0, sticky="ew")
         else:
@@ -348,11 +342,7 @@ class EmbedTab:
                 mode=self.mode.get(),
                 scheme=self.scheme.get(),
                 stego_key=self.seed_entry.get(),
-                encrypt_enabled=(
-                    self.encryption_checkbox.get().strip().lower() in ("1", "true", "on", "yes")
-                    if isinstance(self.encryption_checkbox.get(), str)
-                    else bool(self.encryption_checkbox.get())
-                ),
+                encrypt_enabled=self._is_encryption_enabled(),
             )
 
             mse = calculate_mse(video, output)
@@ -364,9 +354,7 @@ class EmbedTab:
                 text=f"Capacity: {flow_result['needed_bytes']}/{flow_result['available_bytes']} B"
             )
 
-
             self._update_histograms(cover_video=video, stego_video=output)
             messagebox.showinfo("Embed Sukses", "Payload berhasil disisipkan ke video.")
         except Exception as exc:
-            self.result.configure(text=f"Error: {exc}")
             messagebox.showerror("Embed Gagal", str(exc))
