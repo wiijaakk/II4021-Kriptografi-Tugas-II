@@ -26,8 +26,6 @@ def embed(cover_path, payload_info, output_path, scheme, mode, seed=None):
 def extract(stego_path, scheme, mode, seed=None):
     frames, info = read_video(stego_path)
 
-    # extract header dulu, ambil secukupnya buat parse
-    # worst case header = 4+1+1+1+1+1+255+1+255 = 520 bytes = 520*8 bits
     max_header_bits = 520 * 8
     header_bits = extract_from_frames(frames, max_header_bits, scheme, mode, seed)
     header_bytes = bits_to_bytes(header_bits)
