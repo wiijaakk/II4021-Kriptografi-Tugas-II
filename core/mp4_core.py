@@ -1,11 +1,7 @@
 import numpy as np
 
-# Kita perbesar blok jadi 16x16 supaya tahan kompresi ganas MP4 (1 bit disebar ke 256 pixel)
-BLOCK_SIZE = 16
-
-# Kita pake Bit paling signifikan ke-7 (Tepat di bawah MSB murni, nilai 64).
-# Biar bener bener tahan modifikasi algoritma kompresi.
-MASK_BIT = 64
+BLOCK_SIZE = 16  # 1 bit disebar ke 16x16 = 256 piksel biar tahan kompresi
+MASK_BIT = 64    # bit ke-7, cukup kuat tahan H.264 tapi perubahannya ga keliatan
 
 def embed_mp4(frames, full_bits):
     h, w = frames[0].shape[:2]
