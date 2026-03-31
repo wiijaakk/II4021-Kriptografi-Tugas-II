@@ -1,6 +1,6 @@
 # 🕵️‍♂️ II4021 Kriptografi — Tugas II
 
-## 🔐 Embedding dan Ekstraksi Data pada Video
+## 🔐 Steganografi LSB pada Berkas AVI
 Proyek ini merupakan implementasi tugas kedua dari mata kuliah II4021 Kriptografi. Program ini berfungsi untuk melakukan embedding dan ekstraksi data pada file video menggunakan teknik steganografi. Selain itu, program ini dilengkapi dengan antarmuka grafis (GUI) untuk mempermudah pengguna dalam menggunakan fitur-fitur yang tersedia.
 
 ---
