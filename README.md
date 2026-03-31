@@ -37,6 +37,8 @@ II4021-Kriptografi-Tugas-II/
 - **PyQt**: Digunakan untuk membangun antarmuka grafis pengguna (GUI).
 - **OpenCV**: Digunakan untuk pengolahan video.
 - **NumPy**: Digunakan untuk manipulasi data numerik.
+- **CustomTkinter**: Digunakan untuk membangun antarmuka grafis berbasis Tkinter dengan tampilan modern.
+- **Matplotlib**: Digunakan untuk visualisasi data.
 
 ---
 
@@ -45,7 +47,7 @@ II4021-Kriptografi-Tugas-II/
 ### 1️⃣ Persiapan Lingkungan
 Pastikan sudah menginstal **Python 3.8+** dan library berikut:
 ```bash
-pip install PyQt5 opencv-python numpy
+pip install PyQt5 opencv-python numpy matplotlib
 ```
 
 ### 2️⃣ Menjalankan Program
