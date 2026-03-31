@@ -87,10 +87,6 @@ class A51Manager:
     def encrypt_logic(self, raw_bytes, key_int, start_fn=0):
         bit_list = self.bytes_to_bits(raw_bytes)
         
-        # Hapus padding ke 228 bit agar tidak ada trailing bytes (menyebabkan hash berubah)
-        # while len(bit_list) % 228 != 0:
-        #     bit_list.append(0)
-            
         encrypted_bits = []
         current_fn = start_fn
         for i in range(0, len(bit_list), 228):

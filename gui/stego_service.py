@@ -93,7 +93,7 @@ def embed_payload(
         file_payload_path,
     )
 
-    # CEK KAPASITAS DULU SEBELUM MELAKUKAN ENKRIPSI A5/1 YANG BERAT
+    # cek kapasitas
     temp_info = {
         "payload": raw_payload,
         "ukuran": len(raw_payload),
@@ -110,13 +110,11 @@ def embed_payload(
             f"Kapasitas tidak cukup. Butuh {needed_bytes} bytes, tersedia {available_bytes} bytes."
         )
 
-    # BARU LAKUKAN ENKRIPSI JIKA KAPASITAS SUDAH DIPASTIKAN CUKUP
     payload_bytes = raw_payload
     if encrypt_enabled:
         key_int = _parse_a51_key(a51_key)
         payload_bytes = encrypt_bytes(raw_payload, key_int)
 
-    # Update payload info dengan bytes yang sudah terenkripsi
     payload_info = {
         "payload": payload_bytes,
         "ukuran": len(payload_bytes),
