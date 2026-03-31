@@ -36,14 +36,14 @@ def extract(stego_path, scheme, mode, seed=None):
         all_bits = extract_mp4(frames)
         if not all_bits:
             raise ValueError("Tidak ada pesan yang bisa diekstrak dari video ini (mungkin karena kompresi terlalu parah / rusak).")
-        # Karena kita baca full sequence, langsung parse aja
+        
         header_bytes = bits_to_bytes(all_bits[:520*8])
         parsed = parse_header(header_bytes)
         all_bytes = bits_to_bytes(all_bits)
         payload = all_bytes[parsed['header_size'] : parsed['header_size'] + parsed['ukuran']]
         return payload, parsed
         
-    # extract header dulu, ambil secukupnya buat parse
+   
     # worst case header = 4+1+1+1+1+1+255+1+255 = 520 bytes = 520*8 bits
     max_header_bits = 520 * 8
     header_bits = extract_from_frames(frames, max_header_bits, scheme, mode, seed)

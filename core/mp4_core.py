@@ -1,12 +1,12 @@
 import numpy as np
 
-BLOCK_SIZE = 16  # 1 bit disebar ke 16x16 = 256 piksel biar tahan kompresi
-MASK_BIT = 64    # bit ke-7, cukup kuat tahan H.264 tapi perubahannya ga keliatan
+BLOCK_SIZE = 16  
+MASK_BIT = 64    # bit ke-7
 
 def embed_mp4(frames, full_bits):
     h, w = frames[0].shape[:2]
     max_blocks = (h // BLOCK_SIZE) * (w // BLOCK_SIZE)
-    usable_bits = max_blocks - 64  # sisain 64 blok buat header + dummy padding
+    usable_bits = max_blocks - 64  
     
     result_frames = [f.copy() for f in frames]
     
@@ -20,7 +20,7 @@ def embed_mp4(frames, full_bits):
         
         header_idx = [(frame_idx >> i) & 1 for i in range(16)]
         header_len = [(len(chunk) >> i) & 1 for i in range(16)]
-        dummy = [0] * 32  # padding di depan biar distorsi awal frame ga ngereject data
+        dummy = [0] * 32  
         
         frame_data = dummy + header_idx + header_len + chunk
         

@@ -8,7 +8,7 @@ LSB_SCHEMES = {
     '1-1-1': (1, 1, 1),
     '3-3-2': (3, 3, 2),
     '4-4-4': (4, 4, 4),
-    'mp4-robust': (0, 0, 0), # placeholder buat mp4
+    'mp4-robust': (0, 0, 0), 
 }
 
 def read_video(video_path):
@@ -67,7 +67,6 @@ def calculate_capacity(video_path, scheme='3-3-2'):
     frames, info = read_video(video_path)
     
     if scheme == 'mp4-robust':
-        # Tiap blok 16x16 muat 1 bit, dipotong 64 bit per frame (32 dummy + 32 header)
         blocks_per_frame = (info['width'] // 16) * (info['height'] // 16)
         usable_bits_per_frame = blocks_per_frame - 64
         total_bits = max(0, usable_bits_per_frame) * info['frame_count']

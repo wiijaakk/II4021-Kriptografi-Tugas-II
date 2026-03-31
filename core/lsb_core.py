@@ -1,7 +1,6 @@
 import numpy as np
 from core.video_io import LSB_SCHEMES
 
-# fungsi untuk embed bits ke fram video, return frame yang sudah dimodif + jumlah bit yang berhasil diembed
 def embed_bits_to_frame(frame, bits, scheme, start_idx=0): 
     r_bits, g_bits, b_bits = LSB_SCHEMES[scheme]
     result = frame.copy()
@@ -48,7 +47,6 @@ def embed_bits_to_frame(frame, bits, scheme, start_idx=0):
     return result, bit_idx
 
 
-# fungsi untuk ekstrak bits dari frame video, return list of bits yang berhasil diekstrak
 def extract_bits_from_frame(frame, num_bits, scheme, start_idx=0):
     r_bits, g_bits, b_bits = LSB_SCHEMES[scheme]
     height, width = frame.shape[:2]
