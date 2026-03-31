@@ -27,6 +27,15 @@ II4021-Kriptografi-Tugas-II/
 │   ├── metrics.py      # Penghitungan metrik evaluasi
 │   └── stego_service.py# Layanan steganografi untuk GUI
 │
+├── doc/                # Folder berisi dokumen tugas
+│   ├── 18223063_18223088_18223097_Tugas 2_II4021.pdf
+│   └── Tugas2-II4021-2026.pdf
+│
+├── test/               # Folder berisi kasus uji
+│   ├── mp4_test/       # Kasus uji untuk file MP4
+│   ├── normal_test/    # Kasus uji normal
+│   └── overcapacity_test/ # Kasus uji kapasitas berlebih
+│
 └── README.md           # File dokumentasi utama (ini)
 ```
 
