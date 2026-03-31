@@ -32,6 +32,7 @@ II4021-Kriptografi-Tugas-II/
 │   └── Tugas2-II4021-2026.pdf
 │
 ├── test/               # Folder berisi kasus uji
+│   ├── berkas_variasi/ # Kasus uji dengan variasi berkas
 │   ├── mp4_test/       # Kasus uji untuk file MP4
 │   ├── normal_test/    # Kasus uji normal
 │   └── overcapacity_test/ # Kasus uji kapasitas berlebih
