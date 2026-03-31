@@ -1,11 +1,11 @@
-# 🕵️‍♂️ II4021 Kriptografi — Tugas II
+# II4021 Kriptografi — Tugas II
 
-## 🔐 Steganografi LSB pada Berkas AVI
+## Steganografi LSB pada Berkas AVI
 Proyek ini merupakan implementasi tugas kedua dari mata kuliah II4021 Kriptografi. Program ini berfungsi untuk melakukan embedding dan ekstraksi data pada file video menggunakan teknik steganografi. Selain itu, program ini dilengkapi dengan antarmuka grafis (GUI) untuk mempermudah pengguna dalam menggunakan fitur-fitur yang tersedia.
 
 ---
 
-## 📂 Struktur Repository
+## Struktur Repository
 ```
 II4021-Kriptografi-Tugas-II/
 │
@@ -27,12 +27,21 @@ II4021-Kriptografi-Tugas-II/
 │   ├── metrics.py      # Penghitungan metrik evaluasi
 │   └── stego_service.py# Layanan steganografi untuk GUI
 │
+├── doc/                # Folder berisi dokumen tugas
+│   ├── 18223063_18223088_18223097_Tugas 2_II4021.pdf
+│   └── Tugas2-II4021-2026.pdf
+│
+├── test/               # Folder berisi kasus uji
+│   ├── mp4_test/       # Kasus uji untuk file MP4
+│   ├── normal_test/    # Kasus uji normal
+│   └── overcapacity_test/ # Kasus uji kapasitas berlebih
+│
 └── README.md           # File dokumentasi utama (ini)
 ```
 
 ---
 
-## 📜 Teknologi yang Digunakan
+## Teknologi yang Digunakan
 - **Python**: Bahasa pemrograman utama yang digunakan untuk mengembangkan aplikasi ini.
 - **PyQt**: Digunakan untuk membangun antarmuka grafis pengguna (GUI).
 - **OpenCV**: Digunakan untuk pengolahan video.
@@ -42,15 +51,15 @@ II4021-Kriptografi-Tugas-II/
 
 ---
 
-## 🏃‍♀️ Tata Cara Menjalankan Program
+## Tata Cara Menjalankan Program
 
-### 1️⃣ Persiapan Lingkungan
+### Persiapan Lingkungan
 Pastikan sudah menginstal **Python 3.8+** dan library berikut:
 ```bash
 pip install PyQt5 opencv-python numpy matplotlib
 ```
 
-### 2️⃣ Menjalankan Program
+### Menjalankan Program
 Jalankan file `main.py` yang berada di folder `gui` dengan perintah berikut:
 ```bash
 python gui/main.py
@@ -59,7 +68,7 @@ Antarmuka grafis akan muncul, dan Anda dapat mulai menggunakan fitur-fitur yang 
 
 ---
 
-## 👥 Anggota Kelompok
+## Anggota Kelompok
 | NIM      | Nama Lengkap                       |
 |----------|------------------------------------|
 | 18223063 | Sendi Putra Alicia  |
